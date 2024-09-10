@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приложение</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Запрос данных</h1>
+    <label for="page">Номер страницы:</label>
+    <input type="text" id="page" placeholder="Введите номер страницы"><br><br>
+
+    <label for="limit">Лимит:</label>
+    <input type="text" id="limit" placeholder="Введите лимит"><br><br>
+
+    <button id="requestBtn">Запрос</button>
+
+    <div id="message" class="error"></div>
+
+    <script>
+        document.getElementById('requestBtn').addEventListener('click', function() {
+            const pageInput = document.getElementById('page').value;
+            const limitInput = document.getElementById('limit').value;
+            const messageDiv = document.getElementById('message');
+
+            const page = parseInt(pageInput);
+            const limit = parseInt(limitInput);
+            messageDiv.textContent = '';
+
+            if (isNaN(page) || page < 1 || page > 10) {
+                if (isNaN(limit) || limit < 1 || limit > 10) {
+                    messageDiv.textContent = 'Номер страницы и лимит вне диапазона от 1 до 10';
+                } else {
+                    messageDiv.textContent = 'Номер страницы вне диапазона от 1 до 10';
+                }
+            } else if (isNaN(limit) || limit < 1 || limit > 10) {
+                messageDiv.textContent = 'Лимит вне диапазона от 1 до 10';
+            } else {
+                // Если оба значения корректны, делаем запрос
+                fetch(https://jsonplaceholder.typicode.com/photos?_page=${page}&_limit=${limit})
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Сеть не отвечает');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data); // Здесь можно обработать данные
+                        messageDiv.textContent = 'Запрос выполнен успешно!';
+                    })
+                    .catch(error => {
+                        messageDiv.textContent = 'Ошибка при выполнении запроса: ' + error.message;
+                    });
+            }
+        });
+    </script>
+
+</body>
+</html>
